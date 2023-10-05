@@ -38,8 +38,8 @@ const validateNewsItem = celebrate({
 
 const validateUser = celebrate({
   body: Joi.object().keys({
-    username: Joi.string().required().min(2).max(30).messages({
-      "string.empty": "The `username` field must be filled out",
+    name: Joi.string().required().min(2).max(30).messages({
+      "string.empty": "The `name` field must be filled out",
       "string.min": "The required length must be more than 2 characters",
       "string.max": "The required length must be less than 30 characters",
     }),

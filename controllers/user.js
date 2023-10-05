@@ -1,8 +1,10 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const ConflictError = require("../errors/ConflictError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const BadRequestError = require("../errors/BadRequestError");
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUser = (req, res, next) => {
@@ -14,7 +16,7 @@ const getUser = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { email, password, username } = req.body;
+  const { email, password, name } = req.body;
 
   User.findOne({ email })
     .then((existingUser) => {
@@ -26,8 +28,8 @@ const createUser = (req, res, next) => {
       bcrypt
         .hash(password, 10)
         .then((hash) =>
-          User.create({ username, email, password: hash }).then((user) =>
-            res.send({ username, email: user.email }),
+          User.create({ name, email, password: hash }).then((user) =>
+            res.send({ name, email: user.email }),
           ),
         );
     })

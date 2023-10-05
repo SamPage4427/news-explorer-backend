@@ -4,6 +4,8 @@ const { PORT = 3001 } = process.env;
 
 const express = require("express");
 
+const limiter = require("./utils/RateLimiter");
+
 const app = express();
 
 const mongoose = require("mongoose");
@@ -25,6 +27,8 @@ const routes = require("./routes");
 app.use(express.json());
 app.use(routes);
 
+app.use(limiter);
+
 app.use(errorLogger);
 
 app.use(errors());
@@ -34,5 +38,6 @@ const ErrorHandler = require("./middlewares/ErrorHandler");
 app.use(ErrorHandler);
 
 app.listen(PORT, () => {
+  console.log("Database is connected");
   console.log(`App is listening on port: ${PORT}`);
 });

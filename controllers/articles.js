@@ -4,8 +4,8 @@ const ForbiddenError = require("../errors/ForbiddenError");
 const NotFoundError = require("../errors/NotFoundError");
 
 const getSavedArticles = (req, res, next) => {
-  Articles.find({})
-    .then((items) => res.send(items))
+  Articles.find({ owner: req.user._id })
+    .then((articles) => res.send(articles))
     .catch(next);
 };
 
@@ -23,7 +23,7 @@ const createSavedArticle = (req, res, next) => {
     keyword,
     owner,
   })
-    .then((item) => res.send({ data: item }))
+    .then((article) => res.send({ data: article }))
     .catch((e) => {
       if (e.name === "ValidationError") {
         return next(new BadRequestError("Invalid data sent to the server"));
@@ -38,9 +38,9 @@ const deleteSavedArticle = (req, res, next) => {
 
   Articles.findById(articleId)
     .orFail(new NotFoundError("Item not found"))
-    .then((item) => {
-      if (item.owner.equals(userId)) {
-        return item.remove(() => res.send({ item }));
+    .then((article) => {
+      if (article.owner.equals(userId)) {
+        return article.remove(() => res.send({ article }));
       }
       return next(new ForbiddenError("User not authorized to remove item"));
     })
